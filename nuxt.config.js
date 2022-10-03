@@ -88,7 +88,6 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/dayjs',
-    'nuxt-client-init-module',
     '@nuxtjs/google-gtag',
     'nuxt-health',
     '@nuxtjs/sitemap'
@@ -139,5 +138,5 @@ export default {
         }
       }
     }
-  },
+  }
 }

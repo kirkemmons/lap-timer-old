@@ -1,4 +1,5 @@
 <template lang="pug">
+  // Let's make this container not fluid
   v-container(
     fluid
   )
@@ -9,6 +10,7 @@
         cols="12"
         md="4"
       )
+        // Let's put this guy in a v-card
         p.white--text {{ time }}
         v-btn(
           @click="start"
@@ -39,14 +41,14 @@
           v-icon mdi-account-cowboy-hat
 
         div.mb-2(v-for="(lap, i) in laps"
-            :key="i"
-          ) Lap {{ i + 1 }}: {{ lap.time }}
+          :key="i"
+        ) Lap {{ i + 1 }}: {{ lap.time }}
 
 </template>
 
 <script>
+// TODO: use dayjs for a lot of this. Look up @nuxtjs/dayjs
 export default {
-
   data () {
     return {
       timerState: 'stopped',
@@ -86,10 +88,14 @@ export default {
     },
 
     lap () {
+      // TODO: this is putting the time when the lap started into an array. We need how long the particular lap was.
       this.laps.push({
         seconds: this.currentTimer,
+        // You don't need to store this, it can be derived from the seconds. Use Dayjs to do this. Specifically dayjs durations
         time: this.formatTime(this.currentTimer)
       })
+
+      // I don't think you need this.
       this.latestLap = this.formatTime(this.currentTimer)
     },
 

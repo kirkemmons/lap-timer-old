@@ -1,7 +1,6 @@
 <template lang="pug">
   // Let's make this container not fluid
   v-container(
-    fluid
   )
     v-row.mt-8(
       justify="center"
@@ -42,7 +41,7 @@
 
         div.mb-2(v-for="(lap, i) in laps"
           :key="i"
-        ) Lap {{ i + 1 }}: {{ lap.time }}
+        ) Lap {{ i + 1 }}: {{ lap.latestLap }}
 
 </template>
 
@@ -92,11 +91,11 @@ export default {
       this.laps.push({
         seconds: this.currentTimer,
         // You don't need to store this, it can be derived from the seconds. Use Dayjs to do this. Specifically dayjs durations
-        time: this.formatTime(this.currentTimer)
+        latestLap: this.formatTime(this.currentTimer)
       })
 
       // I don't think you need this.
-      this.latestLap = this.formatTime(this.currentTimer)
+      this.currentTimer = 0
     },
 
     reset () {

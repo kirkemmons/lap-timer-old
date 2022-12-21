@@ -6,24 +6,36 @@
       justify="center"
     )
       v-col.text-center(
-        cols="12"
-        md="4"
+        cols="8"
+        sm="4"
       )
-        // Let's put this guy in a v-card
-        p.white--text {{ time }}
-        v-btn(
-          @click="start"
-        ) Start
-        v-btn(
-          @click="lap"
-        ) Lap
-        v-btn(
-          @click="stop"
-        ) Stop
-        v-btn.black--text(
-          color="secondary"
-          @click="reset"
-        ) Reset
+        v-card
+          // Let's put this guy in a v-card
+          v-card-title.justify-center.black--text.font-weight-bold.display-1(
+
+          ) {{ time }}
+            v-card-text
+              v-list
+                v-btn.mb-4(
+                  color="green"
+                  block
+                  @click="start"
+                ) Start
+                v-btn.mb-4(
+                  color="blue"
+                  block
+                  @click="lap"
+                ) Lap
+                v-btn.black--text.mb-4(
+                  block
+                  color="error"
+                  @click="stop"
+                ) Pause
+                v-btn.black--text(
+                  block
+                  color="warning"
+                  @click="reset"
+                ) Reset
 
     v-row.mb-8(
       justify="center"
@@ -34,20 +46,27 @@
       )
         v-btn.mb-6(
           icon
-          color="cyan"
+          color="orange lighten-3"
           dark
+          href="https://github.com/kirkemmons" target="_blank"
         )
-          v-icon mdi-account-cowboy-hat
+          v-icon mdi-crown-outline
 
-        div.mb-2(v-for="(lap, i) in laps"
+        div.mb-2.white--text(v-for="(lap, i) in laps"
           :key="i"
-        ) Lap {{ i + 1 }}: {{ lap.latestLap }}
+        ) Lap {{ i + 1 }}: {{ lap.seconds }}
 
 </template>
 
 <script>
 // TODO: use dayjs for a lot of this. Look up @nuxtjs/dayjs
 export default {
+  // asyncData ({ $dayjs }) {
+  //   return {
+  //     now: $dayjs().format('HH:mm:ss')
+  //   }
+  // },
+
   data () {
     return {
       timerState: 'stopped',
@@ -55,10 +74,11 @@ export default {
       time: '00:00:00',
       ticker: undefined,
       laps: [],
-      latestLap: '',
+      latestLap: null,
       snackbar: false
     }
   },
+
   methods: {
     start () {
       if (this.timerState !== 'running') {
@@ -89,12 +109,9 @@ export default {
     lap () {
       // TODO: this is putting the time when the lap started into an array. We need how long the particular lap was.
       this.laps.push({
-        seconds: this.currentTimer,
+        seconds: this.formatTime(this.currentTimer)
         // You don't need to store this, it can be derived from the seconds. Use Dayjs to do this. Specifically dayjs durations
-        latestLap: this.formatTime(this.currentTimer)
       })
-
-      // I don't think you need this.
       this.currentTimer = 0
     },
 
@@ -106,6 +123,7 @@ export default {
       this.laps = []
     }
   }
+
 }
 
 </script>
@@ -113,7 +131,8 @@ export default {
 <style lang="scss">
 
 .container {
-  background-color: gray;
+  margin: 0 auto;
+  background-color: #333333;
 }
 
 </style>

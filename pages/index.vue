@@ -1,15 +1,17 @@
 <template lang="pug">
   // Let's make this container not fluid
   v-container(
+    fluid
   )
     v-row.mt-8(
       justify="center"
     )
       v-col.text-center(
         cols="8"
-        sm="4"
+        sm="6"
+        md="5"
       )
-        v-card
+        v-card.pt-3
           // Let's put this guy in a v-card
           v-card-title.justify-center.black--text.font-weight-bold.display-1(
 
@@ -18,43 +20,51 @@
               v-list
                 v-btn.mb-4(
                   color="green"
+                  elevation="10"
+                  text
                   block
                   @click="start"
                 ) Start
                 v-btn.mb-4(
                   color="blue"
+                  elevation="10"
+                  text
                   block
                   @click="lap"
                 ) Lap
                 v-btn.black--text.mb-4(
+                  color="red"
+                  elevation="10"
+                  text
                   block
-                  color="error"
                   @click="stop"
-                ) Pause
+                ) Stop
                 v-btn.black--text(
+                  color="orange"
+                  elevation="10"
+                  text
                   block
-                  color="warning"
                   @click="reset"
                 ) Reset
 
-    v-row.mb-8(
+    v-row.my-6(
       justify="center"
     )
       v-col.text-center(
         cols="12"
         md="4"
       )
-        v-btn.mb-6(
+        div.my-2.white--text(v-for="(lap, i) in laps"
+          :key="i"
+        ) Lap {{ i + 1 }}: {{ lap.seconds }}
+
+        v-btn.mt-8(
           icon
           color="orange lighten-3"
           dark
           href="https://github.com/kirkemmons" target="_blank"
         )
           v-icon mdi-crown-outline
-
-        div.mb-2.white--text(v-for="(lap, i) in laps"
-          :key="i"
-        ) Lap {{ i + 1 }}: {{ lap.seconds }}
 
 </template>
 
@@ -133,6 +143,24 @@ export default {
 .container {
   margin: 0 auto;
   background-color: #333333;
+}
+
+@media (min-width: 1020px) {
+  .v-card {
+    max-width: 310px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.v-list .v-btn {
+  opacity: 0.9;
+  border: thin solid black;
+}
+
+.v-btn {
+  opacity: 0.8;
+  border: thin solid black;
 }
 
 </style>

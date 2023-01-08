@@ -88,6 +88,7 @@ export default {
   },
 
   methods: {
+    // The start function starts the timer by calling the tick function if it is not already running.
     start () {
       if (this.timerState !== 'running') {
         this.tick()
@@ -95,6 +96,7 @@ export default {
       }
     },
 
+    // The tick function increments the currentTimer variable by 1 every 10 milliseconds and updates the time variable with the current time in the HH:mm:ss format using the formatTime function.
     tick () {
       this.ticker = setInterval(() => {
         this.currentTimer++
@@ -102,12 +104,14 @@ export default {
       }, 10)
     },
 
+    // The formatTime function takes the number of seconds passed as an argument and uses the dayjs library to create a new dayjs object representing the current time (measuredTime), adds the number of seconds passed to it and returns the resulting time in the HH:mm:ss format.
     formatTime (seconds) {
       const measuredTime = dayjs().startOf('day').add(seconds, 'second')
       return measuredTime.format('HH:mm:ss')
     },
 
     lap () {
+      // This lap function first checks the value of the timerState variable. If the timerState is not running, the function immediately returns without executing the rest of the code.
       if (this.timerState !== 'running') {
         return
       }
@@ -118,20 +122,21 @@ export default {
       this.currentTimer = 0
     },
 
+    // The stop function stops the timer by clearing the interval that was set with the setInterval function in the tick function and sets the timerState to 'paused'.
     stop () {
       window.clearInterval(this.ticker)
       this.timerState = 'paused'
     },
 
+    // The reset function stops the timer by clearing the interval that was set with the setInterval function in the tick function, sets the timerState to 'stopped', resets the time to '00:00:00', sets the currentTimer to 0, and empties the laps array.
     reset () {
       window.clearInterval(this.ticker)
-      this.currentTimer = 0
-      this.time = '00:00:00'
       this.timerState = 'stopped'
+      this.time = '00:00:00'
+      this.currentTimer = 0
       this.laps = []
     }
   }
-
 }
 
 </script>

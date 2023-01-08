@@ -1,8 +1,5 @@
 <template lang="pug">
-  // Let's make this container not fluid
-  v-container(
-    fluid
-  )
+  v-container
     v-row.mt-8(
       justify="center"
     )
@@ -11,12 +8,13 @@
         sm="6"
         md="5"
       )
-        v-card.pt-3
-          // Let's put this guy in a v-card
-          v-card-title.justify-center.black--text.font-weight-bold.display-1(
-
+        v-card.pt-7.pb-6(
+          elevation="18"
+        )
+          v-card-title.justify-center.display-1(
           ) {{ time }}
-            v-card-text
+
+            v-card-text.mt-2
               v-list
                 v-btn.mb-4(
                   color="green"
@@ -54,28 +52,30 @@
         cols="12"
         md="4"
       )
-        div.my-2.white--text(v-for="(lap, i) in laps"
+        div.my-2(
+
+          v-for="(lap, i) in laps"
           :key="i"
+
         ) Lap {{ i + 1 }}: {{ lap.seconds }}
 
         v-btn.mt-8(
           icon
-          color="orange lighten-3"
           dark
+          color="black"
           href="https://github.com/kirkemmons" target="_blank"
         )
-          v-icon mdi-crown-outline
+          v-icon(
+            color="orange"
+          ) mdi-crown-outline
 
 </template>
 
 <script>
-// TODO: use dayjs for a lot of this. Look up @nuxtjs/dayjs
+
+import dayjs from 'dayjs'
+
 export default {
-  // asyncData ({ $dayjs }) {
-  //   return {
-  //     now: $dayjs().format('HH:mm:ss')
-  //   }
-  // },
 
   data () {
     return {
@@ -83,9 +83,7 @@ export default {
       currentTimer: 0,
       time: '00:00:00',
       ticker: undefined,
-      laps: [],
-      latestLap: null,
-      snackbar: false
+      laps: []
     }
   },
 
@@ -105,24 +103,24 @@ export default {
     },
 
     formatTime (seconds) {
-      const measuredTime = new Date(null)
-      measuredTime.setSeconds(seconds)
-      const MHSTime = measuredTime.toISOString().substr(11, 8)
-      return MHSTime
-    },
-
-    stop () {
-      window.clearInterval(this.ticker)
-      this.timerState = 'paused'
+      const measuredTime = dayjs().startOf('day').add(seconds, 'second')
+      return measuredTime.format('HH:mm:ss')
     },
 
     lap () {
-      // TODO: this is putting the time when the lap started into an array. We need how long the particular lap was.
+      if (this.timerState !== 'running') {
+        return
+      }
       this.laps.push({
         seconds: this.formatTime(this.currentTimer)
         // You don't need to store this, it can be derived from the seconds. Use Dayjs to do this. Specifically dayjs durations
       })
       this.currentTimer = 0
+    },
+
+    stop () {
+      window.clearInterval(this.ticker)
+      this.timerState = 'paused'
     },
 
     reset () {
@@ -142,7 +140,7 @@ export default {
 
 .container {
   margin: 0 auto;
-  background-color: #333333;
+  background-color: #e0d5d5;
 }
 
 @media (min-width: 1020px) {
@@ -154,12 +152,10 @@ export default {
 }
 
 .v-list .v-btn {
-  opacity: 0.9;
   border: thin solid black;
 }
 
 .v-btn {
-  opacity: 0.8;
   border: thin solid black;
 }
 

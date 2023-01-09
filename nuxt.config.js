@@ -106,7 +106,8 @@ export default {
     plugins: [
       'utc',
       'relativeTime',
-      'timezone'
+      'timezone',
+      'duration'
     ]
   },
 

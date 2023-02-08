@@ -45,21 +45,25 @@
                   @click="reset"
                 ) Reset
 
-    v-row.my-6(
+    v-row.mt-6(
       justify="center"
     )
       v-col.text-center(
         cols="12"
         md="4"
       )
-        div.my-2(
+        v-data-table.my-3(
+          :headers="headers"
+          :items="laps"
+          class="elevation-18"
+          no-data-text="No laps have been recorded"
+        )
 
-          v-for="(lap, i) in laps"
-          :key="i"
-
-        ) Lap {{ i + 1 }}: {{ lap.seconds }}
-
-        v-btn.mt-8(
+    v-row.my-6(
+    )
+      v-col.text-center(
+      )
+        v-btn.my-2(
           icon
           dark
           color="black"
@@ -82,6 +86,10 @@ export default {
 
   data () {
     return {
+      headers: [
+        { text: 'Lap #', value: 'name' },
+        { text: 'Lap Time', value: 'seconds' }
+      ],
       timerState: 'stopped',
       currentTimer: 0,
       time: '00:00:00',
@@ -119,6 +127,7 @@ export default {
         return
       }
       this.laps.push({
+        name: `Lap ${this.laps.length + 1}`,
         seconds: this.formatTime(this.currentTimer)
         // You don't need to store this, it can be derived from the seconds. Use Dayjs to do this. Specifically dayjs durations
       })

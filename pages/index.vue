@@ -45,11 +45,11 @@
                   @click="reset"
                 ) Reset
 
-    v-row.mt-6(
+    v-row.my-10(
       justify="center"
     )
-      v-col.text-center(
-        cols="12"
+      v-col(
+        cols="9"
         md="4"
       )
         v-data-table.my-3(
@@ -58,6 +58,24 @@
           class="elevation-18"
           no-data-text="No laps have been recorded"
         )
+
+      v-col(
+        cols="9"
+        md="4"
+      )
+        v-card.my-3
+          v-sheet(
+            color="transparent"
+          )
+            v-sparkline(
+              :smooth="16"
+              :gradient="['#1feaea', '#f72047', '#ffd200']"
+              :line-width="3"
+              :value="lapTimes"
+              class="elevation-18"
+              auto-draw
+              stroke-linecap="round"
+            )
 
     v-row.my-6(
     )
@@ -87,14 +105,15 @@ export default {
   data () {
     return {
       headers: [
-        { text: 'Lap #', value: 'name' },
-        { text: 'Lap Time', value: 'seconds' }
+        { text: 'Lap #', align: 'left', value: 'name' },
+        { text: 'Lap Time', align: 'left', value: 'seconds' }
       ],
       timerState: 'stopped',
       currentTimer: 0,
       time: '00:00:00',
       ticker: undefined,
-      laps: []
+      laps: [],
+      lapTimes: []
     }
   },
 
@@ -126,11 +145,12 @@ export default {
       if (this.timerState !== 'running') {
         return
       }
+      const lapTimeSeconds = dayjs.duration(this.currentTimer, 'milliseconds').asSeconds()
       this.laps.push({
         name: `Lap ${this.laps.length + 1}`,
         seconds: this.formatTime(this.currentTimer)
-        // You don't need to store this, it can be derived from the seconds. Use Dayjs to do this. Specifically dayjs durations
       })
+      this.lapTimes.push(lapTimeSeconds)
       this.currentTimer = 0
     },
 
@@ -147,6 +167,7 @@ export default {
       this.time = '00:00:00'
       this.currentTimer = 0
       this.laps = []
+      this.lapTimes = []
     }
   }
 }

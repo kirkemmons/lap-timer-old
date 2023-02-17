@@ -1,6 +1,6 @@
 <template lang="pug">
   v-container
-    v-row.mt-8(
+    v-row.mt-5(
       justify="center"
     )
       v-col.text-center(
@@ -8,7 +8,7 @@
         sm="6"
         md="5"
       )
-        v-card.pt-7.pb-6(
+        v-card.pt-5.pb-2(
           elevation="18"
         )
           v-card-title.justify-center.display-1(
@@ -45,14 +45,15 @@
                   @click="reset"
                 ) Reset
 
-    v-row.my-10(
+    v-row(
       justify="center"
     )
       v-col(
         cols="9"
         md="4"
       )
-        v-data-table.my-3(
+        v-data-table.mt-4(
+          v-if="laps.length > 0"
           :headers="headers"
           :items="laps"
           class="elevation-18"
@@ -63,7 +64,7 @@
         cols="9"
         md="4"
       )
-        v-card.my-3
+        v-card.mt-4
           v-sheet(
             color="transparent"
           )
@@ -77,11 +78,11 @@
               stroke-linecap="round"
             )
 
-    v-row.my-6(
+    v-row.mb-1(
     )
       v-col.text-center(
       )
-        v-btn.my-2(
+        v-btn.my-4(
           icon
           dark
           color="black"
@@ -96,9 +97,7 @@
 <script>
 
 import dayjs from 'dayjs'
-
-const duration = require('dayjs/plugin/duration')
-dayjs.extend(duration)
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
 
@@ -112,9 +111,14 @@ export default {
       currentTimer: 0,
       time: '00:00:00',
       ticker: undefined,
-      laps: [],
-      lapTimes: []
+      laps: []
     }
+  },
+
+  computed: {
+    ...mapGetters({
+      lapTimes: 'lapTimes'
+    })
   },
 
   methods: {
@@ -140,6 +144,11 @@ export default {
       return measuredTime.format('HH:mm:ss')
     },
 
+    ...mapActions({
+      addLapTime: 'addLapTime',
+      resetLapTimes: 'resetLapTimes'
+    }),
+
     lap () {
       // This lap function first checks the value of the timerState variable. If the timerState is not running, the function immediately returns without executing the rest of the code.
       if (this.timerState !== 'running') {
@@ -150,7 +159,7 @@ export default {
         name: `Lap ${this.laps.length + 1}`,
         seconds: this.formatTime(this.currentTimer)
       })
-      this.lapTimes.push(lapTimeSeconds)
+      this.addLapTime(lapTimeSeconds)
       this.currentTimer = 0
 
       // Save lap times to localStorage
@@ -175,7 +184,7 @@ export default {
       this.time = '00:00:00'
       this.currentTimer = 0
       this.laps = []
-      this.lapTimes = []
+      this.resetLapTimes()
 
       // Remove lap times from localStorage
       localStorage.removeItem('laps')

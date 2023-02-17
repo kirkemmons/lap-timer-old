@@ -152,6 +152,14 @@ export default {
       })
       this.lapTimes.push(lapTimeSeconds)
       this.currentTimer = 0
+
+      // Save lap times to localStorage
+      const storedLaps = JSON.parse(localStorage.getItem('laps')) || []
+      storedLaps.push({
+        name: `Lap ${this.laps.length}`,
+        seconds: lapTimeSeconds
+      })
+      localStorage.setItem('laps', JSON.stringify(storedLaps))
     },
 
     // The stop function stops the timer by clearing the interval that was set with the setInterval function in the tick function and sets the timerState to 'paused'.
@@ -168,6 +176,9 @@ export default {
       this.currentTimer = 0
       this.laps = []
       this.lapTimes = []
+
+      // Remove lap times from localStorage
+      localStorage.removeItem('laps')
     }
   }
 }

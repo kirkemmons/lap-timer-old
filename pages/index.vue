@@ -111,13 +111,13 @@ export default {
       timerState: 'stopped',
       currentTimer: 0,
       time: '00:00:00',
-      ticker: undefined,
-      laps: []
+      ticker: undefined
     }
   },
 
   computed: {
     ...mapGetters({
+      laps: 'laps',
       lapTimes: 'lapTimes'
     })
   },
@@ -146,7 +146,9 @@ export default {
     },
 
     ...mapActions({
+      addLap: 'addLap',
       addLapTime: 'addLapTime',
+      resetLap: 'resetLap',
       resetLapTimes: 'resetLapTimes'
     }),
 
@@ -167,7 +169,7 @@ export default {
       }
 
       const lapTimeSeconds = dayjs.duration(lapEndTime - lapStartTime, 'milliseconds').asSeconds()
-      this.laps.push({
+      this.addLap({
         name: `Lap ${this.laps.length + 1}`,
         seconds: this.formatTime(lapEndTime - lapStartTime),
         endTime: lapEndTime
@@ -197,7 +199,7 @@ export default {
       this.timerState = 'stopped'
       this.time = '00:00:00'
       this.currentTimer = 0
-      this.laps = []
+      this.resetLap()
       this.resetLapTimes()
 
       // Remove lap times from localStorage

@@ -8,7 +8,7 @@
         sm="6"
         md="5"
       )
-        v-card.pt-5.pb-2(
+        v-card.pt-5.pb-2.timer(
           elevation="18"
         )
           v-card-title.justify-center.display-1(
@@ -50,7 +50,7 @@
     )
       v-col(
         cols="9"
-        md="4"
+        lg="6"
       )
         v-data-table.mt-4(
           v-if="laps.length > 0"
@@ -60,23 +60,24 @@
           no-data-text="No laps have been recorded"
         )
 
+    v-row(
+      justify="center"
+    )
       v-col(
         cols="9"
-        md="4"
+        lg="6"
       )
         v-card.mt-4
-          v-sheet(
-            color="transparent"
+          v-sparkline.px-3(
+            show-labels
+            label-size="6"
+            :value="lapTimes"
+            :gradient="['#1feaea', '#f72047', '#ffd200']"
+            line-width="3"
+            auto-draw
+            stroke-linecap="square"
+            class="elevation-18"
           )
-            v-sparkline(
-              :smooth="16"
-              :gradient="['#1feaea', '#f72047', '#ffd200']"
-              :line-width="3"
-              :value="lapTimes"
-              class="elevation-18"
-              auto-draw
-              stroke-linecap="round"
-            )
 
     v-row.mb-1(
     )
@@ -154,19 +155,32 @@ export default {
       if (this.timerState !== 'running') {
         return
       }
-      const lapTimeSeconds = dayjs.duration(this.currentTimer, 'milliseconds').asSeconds()
+
+      const lapEndTime = this.currentTimer // Store the current time as the end time of the lap
+      const lastLapIndex = this.laps.length - 1
+      let lapStartTime = 0
+
+      if (lastLapIndex >= 0) {
+        lapStartTime = this.laps[lastLapIndex].endTime // Use the end time of the last lap as the start time of the new lap
+      } else {
+        lapStartTime = 0 // Set the start time of the first lap to 0
+      }
+
+      const lapTimeSeconds = dayjs.duration(lapEndTime - lapStartTime, 'milliseconds').asSeconds()
       this.laps.push({
         name: `Lap ${this.laps.length + 1}`,
-        seconds: this.formatTime(this.currentTimer)
+        seconds: this.formatTime(lapEndTime - lapStartTime),
+        endTime: lapEndTime
       })
       this.addLapTime(lapTimeSeconds)
-      this.currentTimer = 0
+      // this.currentTimer = 0
+      // Reset the timer to 0 after each lap
 
       // Save lap times to localStorage
       const storedLaps = JSON.parse(localStorage.getItem('laps')) || []
       storedLaps.push({
         name: `Lap ${this.laps.length}`,
-        seconds: lapTimeSeconds
+        seconds: this.formatTime(lapEndTime - lapStartTime)
       })
       localStorage.setItem('laps', JSON.stringify(storedLaps))
     },
@@ -202,7 +216,7 @@ export default {
 }
 
 @media (min-width: 1020px) {
-  .v-card {
+  .timer {
     max-width: 310px;
     margin-left: auto;
     margin-right: auto;

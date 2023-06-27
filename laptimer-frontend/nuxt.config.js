@@ -50,7 +50,7 @@ export default {
   ],
 
   build: {
-
+    transpile: ['feathers-vuex']
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
